@@ -3,7 +3,7 @@ const CustomError = require("../../helpers/error/CustomError");
 const customErrorHandler = (err,req,res,next) => {
 
     let customErr = err;
-    console.log(err)
+
     if(err === SyntaxError){
         customErr = new CustomError("Unexpected Syntax", 400);
     }
@@ -21,15 +21,16 @@ const customErrorHandler = (err,req,res,next) => {
     else if(err.status === 401){
         customErr = new CustomError("UNAUTHORIZED", 401)
     }
-
+    else if(err.hasOwnProperty("_message") && err._message === "User validation failed"){
+        customErr = new CustomError(err.message, 400)
+    }
 
     res
         .status(customErr.status || 500)
         .json({
             success:false,
-            message:customErr.toString()
+            message:customErr.toString() || "Internal server error!"
         });
-
 }
 
 module.exports = customErrorHandler;
