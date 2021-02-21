@@ -6,7 +6,7 @@ const {WarningConstants} = require("../util/Constants");
 
 const UserSchema = new Schema({
 
-    nick_name: {
+    name: {
         type: String,
         required: [true, WarningConstants.PROVIDE_NAME]
     },
@@ -15,7 +15,7 @@ const UserSchema = new Schema({
         required: [true, WarningConstants.PROVIDE_EMAIL],
         unique: true,
         match: [
-            process.env.EMAIL_MATCH_REGEX,
+            /^([\w-\.]+@([\w-]+\.)+[\w-]{2,4})?$/,
             WarningConstants.PROVIDE_VALID_EMAIL
         ]
     },
@@ -26,7 +26,7 @@ const UserSchema = new Schema({
         required: [true, WarningConstants.PROVIDE_PASSWORD],
         select: false,
         match: [
-            process.env.PASSWORD_MATCH_REGEX,
+            /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9]).{8,1024}$/,
             WarningConstants.PROVIDE_VALID_PASSWORD
         ]
     },
@@ -50,7 +50,7 @@ UserSchema.methods.generateJswFromUser = function (){
 
 UserSchema.pre("save", function(next){
     if(this.isModified("password")){
-        bcrypt.genSalt(process.env.BCRYPT_GEN_SALT_ROUNDS, (err, salt) => {
+        bcrypt.genSalt(parseInt(process.env.BCRYPT_GEN_SALT_ROUNDS), (err, salt) => {
             if (err) next(err);
             bcrypt.hash(this.password, salt,(err, hash) => {
                 if (err) next(err);

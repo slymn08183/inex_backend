@@ -3,7 +3,7 @@ const CustomError = require("../../helpers/error/CustomError");
 const customErrorHandler = (err,req,res,next) => {
 
     let customErr = err;
-
+    console.log(err)
     if(err === SyntaxError){
         customErr = new CustomError("Unexpected Syntax", 400);
     }
