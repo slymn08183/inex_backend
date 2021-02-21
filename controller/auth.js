@@ -19,17 +19,25 @@ const register = asyncErrorWrapper( async (req, res ,next) => {
 
 
 const login = asyncErrorWrapper( async (req, res, next) =>{
+
     const  {email, password} = req.body;
+    if (res.locals.access_token === true){
+        sentJwtToClient(null, res)
+    }
+
     if(!validateUserInput(email, password)){
         return next(new CustomError("Please check your inputs.", 400));
     }
 
     const user = await User.findOne({email}).select("+password");
+    if(!user){
+        return next(new CustomError("There is no such user!", 400));
+    }
 
     if(!comparePassword(password, user.password)){
         return next(new CustomError("Please check your credentials!", 400));
     }
-    sentJwtToClient(user, res);
+    sentJwtToClient(user, res)
 });
 
 const logout = asyncErrorWrapper(async(req, res, next) => {
@@ -52,7 +60,7 @@ const logout = asyncErrorWrapper(async(req, res, next) => {
 const tokenTest = (req, res, next) => {
     res.json({
         success: true,
-
+        message:"Token is valid!"
     })
 };
 

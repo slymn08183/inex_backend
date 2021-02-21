@@ -15,7 +15,7 @@ const customErrorHandler = (err,req,res,next) => {
             customErr = new CustomError("This game is already in database!", 400);
         }
         else{
-            //customErr = new CustomError("Unknown Database Error!", 500)
+            customErr = new CustomError("Unknown Database Error!", 500)
         }
     }
     else if(err.status === 401){
@@ -27,7 +27,7 @@ const customErrorHandler = (err,req,res,next) => {
         .status(customErr.status || 500)
         .json({
             success:false,
-            message:customErr.toString() || "Internal Server Error"
+            message:customErr.toString()
         });
 
 }

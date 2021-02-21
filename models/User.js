@@ -33,6 +33,10 @@ const UserSchema = new Schema({
     createdAt: {
         type: Date,
         default: Date.now
+    },
+    secret:{
+        type: String,
+        default:process.env.JWT_INTERNAL_SECRET_KEY
     }
 
 });
@@ -41,7 +45,9 @@ UserSchema.methods.generateJswFromUser = function (){
     const {JWT_SECRET_KEY, JWT_EXPIRE} = process.env;
     const payload = {
         id: this._id,
-        name: this.name
+        name: this.name,
+        email: this.email,
+        secret: this.secret
     }
     return jwt.sign(payload, JWT_SECRET_KEY, {
         expiresIn: JWT_EXPIRE

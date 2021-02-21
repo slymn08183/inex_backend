@@ -11,6 +11,12 @@ const app = express();
 connectToDatabase();
 app.use(express.json());
 
+app.use(function (req, res, next) {
+    res.locals.access_token = "deneme"
+    res.locals.decoded = false
+    next()
+})
+
 app.use("/api/game/", gameRouter);
 
 app.use("/api/auth/", authRouter)
