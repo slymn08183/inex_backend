@@ -18,20 +18,17 @@ const sendGame = asyncErrorWrapper( async (req, res ,next) => {
 });
 
 const saveGame = asyncErrorWrapper( async (req, res, next) => {
-    let _game;
 
-    const {data} = req.body
-    console.log(data)
-    _game = await  Game("en").create({
-        game : data.game
-    });
+    const _game = await  Game("en")
+        .create(
+        req.body
+    )
 
-    return res.
-        status(200)
+    return res
+        .status(200)
         .json({
             success:true,
-            message:"Done",
-            game:_game
+            message:_game
         })
 })
 

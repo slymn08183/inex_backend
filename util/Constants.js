@@ -4,6 +4,7 @@ const WarningConstants = {
     PROVIDE_EMAIL:"You have to provide an email!",
     PROVIDE_VALID_EMAIL:"You have to provide a valid email!",
     PROVIDE_NAME:"You have to provide a name!",
+    PROVIDE_STORE_NAME:"You have to provide a name!",
     PASSWORD_MIN_LENGTH:"Password length must be at least 6!",
     PASSWORD_MAX_LENGTH:"Password length can't be more than 20!",
     PROVIDE_PASSWORD:"You have to provide a password!",

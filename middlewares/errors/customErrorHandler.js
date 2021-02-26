@@ -1,4 +1,5 @@
 const CustomError = require("../../helpers/error/CustomError");
+const {errorHolderMongooseValidation} = require("../../helpers/error/ErrorHolder");
 
 const customErrorHandler = (err,req,res,next) => {
 
@@ -22,14 +23,15 @@ const customErrorHandler = (err,req,res,next) => {
         customErr = new CustomError("UNAUTHORIZED", 401)
     }
     else if(err.hasOwnProperty("_message") && err._message === "User validation failed"){
-        customErr = new CustomError(err.message, 400)
+        customErr = new CustomError("undefined", 400, errorHolderMongooseValidation(err))
     }
 
+    console.log(err)
     res
         .status(customErr.status || 500)
         .json({
             success:false,
-            message:customErr.toString() || "Internal server error!"
+            message:customErr.internalMessage || customErr.toString() || "Internal server error!",
         });
 }
 

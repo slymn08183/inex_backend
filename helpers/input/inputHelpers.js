@@ -6,11 +6,16 @@ const validateUserInput = (email, password) => {
 
 }
 
+const validateLastChangedAt = (tokenLastChangedAt, lastChangedAt) => {
+    return Date.parse(tokenLastChangedAt) >= lastChangedAt
+}
+
 const comparePassword = (password, hashedPassword) => {
     return bcrypt.compareSync(password, hashedPassword);
 }
 
 module.exports = {
     validateUserInput,
-    comparePassword
+    comparePassword,
+    validateLastChangedAt
 }

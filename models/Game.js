@@ -4,7 +4,7 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const {WarningConstants, DatabaseConstants} = require("../util/Constants");
 
-const UserSchema = new Schema({
+const GameSchema = new Schema({
 
     [DatabaseConstants.GAME]: {
         [DatabaseConstants.GAME_NAME]:{
@@ -51,39 +51,46 @@ const UserSchema = new Schema({
             maxlength: [process.env.DESCRIPTION_MAX_LENGTH, WarningConstants.DESCRIPTION_MAX_LENGTH]
         }
     },
-    [DatabaseConstants.GAME_STORES]:{
-        [DatabaseConstants.GAME_NAME]:{
-            type: String,
-            //required: [true, WarningConstants.PROVIDE_NAME],
-        },
-        [DatabaseConstants.GAME_URL]:{
-            type: String,
-            //required: [true, WarningConstants.PROVIDE_NAME],
-        },
-        [DatabaseConstants.GAME_DISCOUNT_PRICE]:{
-            type: String,
-            //required: [true, WarningConstants.PROVIDE_VALID_PRICE_VALUES],
-        },
-        [DatabaseConstants.GAME_ORIGINAL_PRICE]:{
-            type: String,
-            //required: [true, WarningConstants.PROVIDE_VALID_PRICE_VALUES],
-        },
-        [DatabaseConstants.GAME_DISCOUNT_PRICE_FMT]:{
-            type: String,
-            //required: [true, WarningConstants.PROVIDE_VALID_PRICE_VALUES],
-        },
-        [DatabaseConstants.GAME_ORIGINAL_PRICE_FMT]:{
-            type: String,
-            //required: [true, WarningConstants.PROVIDE_VALID_PRICE_VALUES],
-        },
-    },
+    [DatabaseConstants.GAME_STORES]:
+        [
+            {
+                [DatabaseConstants.GAME_NAME]:{ // Store name
+                    type: String,
+                    required: [true, WarningConstants.PROVIDE_STORE_NAME],
+                },
+                [DatabaseConstants.GAME_URL]:{
+                    type: String,
+                    //required: [true, WarningConstants.PROVIDE_NAME],
+                },
+                [DatabaseConstants.GAME_DISCOUNT_PRICE]:{
+                    type: String,
+                    //required: [true, WarningConstants.PROVIDE_VALID_PRICE_VALUES],
+                },
+                [DatabaseConstants.GAME_ORIGINAL_PRICE]:{
+                    type: String,
+                    //required: [true, WarningConstants.PROVIDE_VALID_PRICE_VALUES],
+                },
+                [DatabaseConstants.GAME_DISCOUNT_PRICE_FMT]:{
+                    type: String,
+                    //required: [true, WarningConstants.PROVIDE_VALID_PRICE_VALUES],
+                },
+                [DatabaseConstants.GAME_ORIGINAL_PRICE_FMT]:{
+                    type: String,
+                    //required: [true, WarningConstants.PROVIDE_VALID_PRICE_VALUES],
+                },
+                createdAt: {
+                    type: Date,
+                    default: Date.now
+                }
+            },
+        ],
     createdAt: {
         type: Date,
         default: Date.now
     }
 });
-
-UserSchema.methods.generateJswFromUser = function (){
+/*
+GameSchema.methods.generateJswFromUser = function (){
     const {JWT_SECRET_KEY, JWT_EXPIRE} = process.env;
     const payload = {
         id: this._id,
@@ -93,9 +100,9 @@ UserSchema.methods.generateJswFromUser = function (){
         expiresIn: JWT_EXPIRE
     });
 }
-
+*/
 module.exports = function (collection_language){
-    return mongoose.model(`Game:${collection_language}`, UserSchema);
+    return mongoose.model(`${collection_language}_Game`, GameSchema);
 }
 
 

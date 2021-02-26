@@ -26,9 +26,13 @@ const UserSchema = new Schema({
         required: [true, WarningConstants.PROVIDE_PASSWORD],
         select: false,
         match: [
-            /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9]).{8,1024}$/,
+            /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9]).{6,1024}$/,
             WarningConstants.PROVIDE_VALID_PASSWORD
         ]
+    },
+    lastChangedAt:{
+        type: Date,
+        default: Date.now,
     },
     createdAt: {
         type: Date,
@@ -36,7 +40,7 @@ const UserSchema = new Schema({
     },
     secret:{
         type: String,
-        default:process.env.JWT_INTERNAL_SECRET_KEY
+        default:process.env.JWT_INTERNAL_SECRET_KEY,
     }
 
 });
@@ -47,6 +51,7 @@ UserSchema.methods.generateJswFromUser = function (){
         id: this._id,
         name: this.name,
         email: this.email,
+        lastChangedAt: this.lastChangedAt,
         secret: this.secret
     }
     return jwt.sign(payload, JWT_SECRET_KEY, {
@@ -69,5 +74,6 @@ UserSchema.pre("save", function(next){
         next();
     }
 });
+
 
 module.exports = mongoose.model("User", UserSchema);

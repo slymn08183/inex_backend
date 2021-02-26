@@ -2,33 +2,43 @@ const jwt = require("jsonwebtoken");
 
 const sentJwtToClient = (user, res) =>{
     // Generate JWT
-    console.log(user)
-    if(res.locals.decoded){
-        console.log(res.locals.decoded);
 
-        return res
-            .status(200)
-            .json({
-                data:res.locals.decoded
-            })
-    }
-    else{
-        const token = user.generateJswFromUser();
+    const token = user.generateJswFromUser();
+    const {JWT_COOKIE_EXPIRE, NODE_ENV} = process.env;
+    return res
+        .status(200)
+        .cookie("access_token", token, {
+            httpOnly: true, // to mate it work with only http
+            expires: new Date(Date.now() + parseInt(JWT_COOKIE_EXPIRE) + 1000),
+            secure: NODE_ENV !== "development" // https or http
+        })
+        .json({
+            success: true,
+            access_token: token,
+        });
 
-        const {JWT_COOKIE_EXPIRE, NODE_ENV} = process.env;
+}
 
-        return res
-            .status(200)
-            .cookie("access_token", token, {
-                httpOnly: true, // to mate it work with only http
-                expires: new Date(Date.now() + parseInt(JWT_COOKIE_EXPIRE) + 1000),
-                secure: NODE_ENV !== "development" // https or http
-            })
-            .json({
-                success: true,
-                access_token: token,
-            });
-    }
+const sentJwtToClientWithToken = (token, res) =>{
+
+    const user = getUserFromToken(token)
+    //const token = user.getUserFromToken();
+    const {JWT_COOKIE_EXPIRE, NODE_ENV} = process.env;
+    return res
+        .status(200)
+        .cookie("access_token", token, {
+            httpOnly: true, // to mate it work with only http
+            expires: new Date(Date.now() + parseInt(JWT_COOKIE_EXPIRE) + 1000),
+            secure: NODE_ENV !== "development" // https or http
+        })
+        .json({
+            success: true,
+            access_token: token,
+        });
+
+}
+const getUserFromToken = (token) => {
+
 }
 
 const isTokenIncluded = (req) => {
@@ -42,7 +52,7 @@ const getAccessTokenFromHeader = (req) => {
 const decodeToken = function (token) {
     const {JWT_SECRET_KEY} = process.env;
     jwt.verify(token, JWT_SECRET_KEY, (err, decoded) => {
-        console.log(err)
+        console.log(err)// FIXME: write it to database
         if(err){
             return false;
         }
@@ -54,5 +64,6 @@ module.exports = {
     sentJwtToClient,
     isTokenIncluded,
     getAccessTokenFromHeader,
-    decodeToken
+    decodeToken,
+    //sentJwtToClientWithToken
 };

@@ -1,7 +1,7 @@
 const User = require("../models/User");
 const asyncErrorWrapper = require("express-async-handler");
 const {sentJwtToClient} = require("../helpers/authorization/tokenHelpers");
-const {validateUserInput, comparePassword} = require("../helpers/input/inputHelpers");
+const {validateUserInput, comparePassword, validateLastChangedAt} = require("../helpers/input/inputHelpers");
 const CustomError = require("../helpers/error/CustomError")
 
 const register = asyncErrorWrapper( async (req, res ,next) => {
@@ -20,16 +20,24 @@ const register = asyncErrorWrapper( async (req, res ,next) => {
 
 const login = asyncErrorWrapper( async (req, res, next) =>{
 
-    const  {email, password} = req.body;
-    if (res.locals.access_token === true){
-        sentJwtToClient(null, res)
+    if(res.locals.access_token){
+        const {email} = res.locals.decoded
+
+        const user = await User.findOne({email});
+        if(user && validateLastChangedAt(res.locals.decoded.lastChangedAt, user.lastChangedAt)){
+            console.log("Access with token")
+            return sentJwtToClient(user, res)
+        }
     }
 
+    const {email, password} = req.body;
+
     if(!validateUserInput(email, password)){
+        console.log()
         return next(new CustomError("Please check your inputs.", 400));
     }
 
-    const user = await User.findOne({email}).select("+password");
+    const user = await User.findOne({email:email}).select("+password");
     if(!user){
         return next(new CustomError("There is no such user!", 400));
     }
@@ -37,12 +45,15 @@ const login = asyncErrorWrapper( async (req, res, next) =>{
     if(!comparePassword(password, user.password)){
         return next(new CustomError("Please check your credentials!", 400));
     }
-    sentJwtToClient(user, res)
+
+    console.log("Access with password")
+    return sentJwtToClient(user, res)
+
 });
 
 const logout = asyncErrorWrapper(async(req, res, next) => {
 
-    const {JWT_COOKIE_EXPIRE, NODE_ENV} = process.env
+    const {NODE_ENV} = process.env
     return res
         .status(200)
         .cookie({
@@ -57,6 +68,24 @@ const logout = asyncErrorWrapper(async(req, res, next) => {
 
 });
 
+const logoutFromEverywhere = asyncErrorWrapper(async(req, res, next) => {
+
+    const {NODE_ENV} = process.env
+
+    return res
+        .status(200)
+        .cookie({
+            httpOnly: false,
+            expires: new Date(Date.now()),
+            secure: NODE_ENV !== "development"
+        })
+        .json({
+            success: true,
+            message: "Logout successful!"
+        })
+
+})
+
 const tokenTest = (req, res, next) => {
     res.json({
         success: true,
@@ -68,5 +97,6 @@ module.exports = {
     register,
     tokenTest,
     login,
-    logout
+    logout,
+    logoutFromEverywhere
 };

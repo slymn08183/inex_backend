@@ -1,6 +1,6 @@
 const {getAccessToRoute, getAccessToRouteWithToken} = require("../middlewares/authorization/auth");
 const express = require("express");
-const {register, tokenTest, login, logout} = require("../controller/auth");
+const {register, tokenTest, login, logout, permission} = require("../controller/auth");
 const router = express.Router();
 
 // noinspection JSCheckFunctionSignatures
@@ -11,5 +11,7 @@ router.post("/login", getAccessToRouteWithToken, login);
 router.post("/token-test", getAccessToRoute, tokenTest)
 
 router.get("/logout", getAccessToRoute, logout)
+
+//router.get("/permission", permission)
 
 module.exports = router;
