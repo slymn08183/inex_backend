@@ -38,11 +38,11 @@ const getUserFromToken = (token) => {
 }
 
 const isTokenIncluded = (req) => {
-    return req.headers.authorization && req.headers.authorization.toLocaleLowerCase().startsWith("bearer:"); //FIXME: get bearer key from config.env
+    return req.headers.access_token && req.headers.access_token.toLocaleLowerCase().startsWith("bearer:"); //FIXME: get bearer key from config.env
 }
 
 const getAccessTokenFromHeader = (req) => {
-    return req.headers.authorization.split(":")[1];
+    return req.headers.access_token.split(":")[1];
 }
 
 const getAdminTokenFromHeader = (req) => {
