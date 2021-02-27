@@ -18,6 +18,7 @@ const getAccess = (req, res, next) => {
 
 const getAccessToRouteWithToken = (req, res, next) => {
     //return next();
+
     if(!isTokenIncluded(req)){
         res.locals.access_token = false;
         res.locals.decoded = false;

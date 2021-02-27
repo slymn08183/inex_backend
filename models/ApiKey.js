@@ -1,15 +1,11 @@
 const mongoose = require("mongoose");
 const Schema =  mongoose.Schema;
+const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const {WarningConstants} = require("../util/Constants");
-const {bcryptTheKey} = require("../helpers/crypt/crypt")
-//const deviceHolder = require("../models/DeviceHolder")
+const {bcryptTheKey} = require("../helpers/crypt/crypt");
 
-const deviceHolder = new mongoose.Schema({
-
-})
-
-const UserSchema = new Schema({
+const ApiKeySchema = new Schema({
 
     name: {
         type: String,
@@ -35,55 +31,27 @@ const UserSchema = new Schema({
             WarningConstants.PROVIDE_VALID_PASSWORD
         ]
     },
-    devices:[
-        {
-            deviceType: {
-                type: String,
-                required: [true, WarningConstants.DEVICE_TYPE]
-            },
-            deviceID: {
-                type: String,
-                required: [true, WarningConstants.DEVICE_ID]
-            },
-            lastChangedAt: {
-                type: Date,
-                default: Date.now
-            }
-        }
-    ],
-    lastChangedAt:{
-        type: Date,
-        default: Date.now,
+    secret:{
+        type: String,
+        default: process.env.JWT_INTERNAL_ADMIN_KEY
     },
     createdAt: {
         type: Date,
         default: Date.now
-    },
-    secret:{
-        type: String,
-        default:process.env.JWT_INTERNAL_SECRET_KEY,
-    },
-    isBanned:{
-        type: Boolean,
-        default: false
     }
 });
 
-UserSchema.methods.generateJswFromUser = function (){
-    const {JWT_SECRET_KEY, JWT_EXPIRE} = process.env;
+ApiKeySchema.methods.generateJswFromUser = function (){
     const payload = {
         id: this._id,
         name: this.name,
         email: this.email,
-        lastChangedAt: this.lastChangedAt,
         secret: this.secret
     }
-    return jwt.sign(payload, JWT_SECRET_KEY, {
-        expiresIn: JWT_EXPIRE
-    });
+    return jwt.sign(payload, process.env.JWT_ADMIN_KEY);
 }
 
-UserSchema.pre("save", function(next){
+ApiKeySchema.pre("save", function(next){
     if(this.isModified("password")){
         bcryptTheKey(this, next);
     }
@@ -92,5 +60,4 @@ UserSchema.pre("save", function(next){
     }
 });
 
-
-module.exports = mongoose.model("User", UserSchema);
+module.exports = mongoose.model("ApiKey", ApiKeySchema);

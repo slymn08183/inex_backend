@@ -20,9 +20,7 @@ const sendGame = asyncErrorWrapper( async (req, res ,next) => {
 const saveGame = asyncErrorWrapper( async (req, res, next) => {
 
     const _game = await  Game("en")
-        .create(
-        req.body
-    )
+        .create(req.body)
 
     return res
         .status(200)

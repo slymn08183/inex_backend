@@ -1,19 +1,25 @@
 const WarningConstants = {
 
-    // STRINGS
+    // USER STRINGS
     PROVIDE_EMAIL:"You have to provide an email!",
     PROVIDE_VALID_EMAIL:"You have to provide a valid email!",
     PROVIDE_NAME:"You have to provide a name!",
     PROVIDE_STORE_NAME:"You have to provide a name!",
-    PASSWORD_MIN_LENGTH:"Password length must be at least 6!",
-    PASSWORD_MAX_LENGTH:"Password length can't be more than 20!",
     PROVIDE_PASSWORD:"You have to provide a password!",
     PROVIDE_VALID_PASSWORD:"Password must have followings: Capital letter, Special character and a Number.",
+
+    PASSWORD_MIN_LENGTH:"Password length must be at least 6!",
+    PASSWORD_MAX_LENGTH:"Password length can't be more than 20!",
+
+    DEVICE_TYPE:"You have to provide a device type!",
+    DEVICE_ID:"You have to provide a device ID!",
 
     // Game Database Warnings
     PROVIDE_VALID_PRICE_VALUES:"Given price information is not correct!",
     DESCRIPTION_MAX_LENGTH:"Description length cannot be more than 10000 character!",
     SPECS_MAX_LENGTH:"Specification length cannot be more than 2000 character!"
+
+
 }
 
 const DatabaseConstants = {

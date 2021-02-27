@@ -5,15 +5,7 @@ const {validateUserInput, comparePassword, validateLastChangedAt} = require("../
 const CustomError = require("../helpers/error/CustomError")
 
 const register = asyncErrorWrapper( async (req, res ,next) => {
-
-    let user;
-
-    const {name,email,password} = req.body
-    user = await  User.create({
-        name,
-        email,
-        password
-    });
+    const user = await  User.create(req.body);
     sendJwtToClient(user, res);
 });
 
