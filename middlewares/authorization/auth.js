@@ -25,10 +25,11 @@ const getAccessToRouteWithToken = (req, res, next) => {
     }
 
     jwt.verify(getAccessTokenFromHeader(req), JWT_SECRET_KEY, (err, decoded) => {
-        //console.log(err)
-        //console.log(decoded.secret)
+
+        console.log("Token Decoded: \n" + decoded)
         if(err || !compareInternalSecretKey(decoded.secret)){
-            console.log("Token asdasdas")
+            console.log("Token Internal Key Failed")
+            console.log(err)
             res.locals.access_token = false;
             res.locals.decoded = false;
             return next();
