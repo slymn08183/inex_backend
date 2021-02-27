@@ -1,6 +1,6 @@
 const jwt = require("jsonwebtoken");
 
-const sentJwtToClient = (user, res) =>{
+const sendJwtToClient = (user, res) =>{
     // Generate JWT
 
     const token = user.generateJswFromUser();
@@ -19,24 +19,20 @@ const sentJwtToClient = (user, res) =>{
 
 }
 
-const sentJwtToClientWithToken = (token, res) =>{
-
-    const user = getUserFromToken(token)
-    //const token = user.getUserFromToken();
-    const {JWT_COOKIE_EXPIRE, NODE_ENV} = process.env;
-    return res
-        .status(200)
-        .cookie("access_token", token, {
-            httpOnly: true, // to mate it work with only http
-            expires: new Date(Date.now() + parseInt(JWT_COOKIE_EXPIRE) + 1000),
-            secure: NODE_ENV !== "development" // https or http
-        })
-        .json({
-            success: true,
-            access_token: token,
-        });
-
+const sendAdminToken= (token, res) =>{
+    const {JWT_SECRET_KEY, JWT_EXPIRE} = process.env;
+    const payload = {
+        id: this._id,
+        name: this.name,
+        email: this.email,
+        lastChangedAt: this.lastChangedAt,
+        secret: this.secret
+    }
+    return jwt.sign(payload, JWT_SECRET_KEY, {
+        expiresIn: JWT_EXPIRE
+    });
 }
+
 const getUserFromToken = (token) => {
 
 }
@@ -65,7 +61,7 @@ const decodeToken = function (token) {
 }
 
 module.exports = {
-    sentJwtToClient,
+    sendJwtToClient,
     isTokenIncluded,
     getAccessTokenFromHeader,
     decodeToken,

@@ -1,6 +1,6 @@
 const User = require("../models/User");
 const asyncErrorWrapper = require("express-async-handler");
-const {sentJwtToClient} = require("../helpers/authorization/tokenHelpers");
+const {sendJwtToClient} = require("../helpers/authorization/tokenHelpers");
 const {validateUserInput, comparePassword, validateLastChangedAt} = require("../helpers/input/inputHelpers");
 const CustomError = require("../helpers/error/CustomError")
 
@@ -14,7 +14,7 @@ const register = asyncErrorWrapper( async (req, res ,next) => {
         email,
         password
     });
-    sentJwtToClient(user, res);
+    sendJwtToClient(user, res);
 });
 
 
@@ -26,7 +26,7 @@ const login = asyncErrorWrapper( async (req, res, next) =>{
         const user = await User.findOne({email});
         if(user && validateLastChangedAt(res.locals.decoded.lastChangedAt, user.lastChangedAt)){
             console.log("Access with token")
-            return sentJwtToClient(user, res)
+            return sendJwtToClient(user, res)
         }
     }
 
@@ -47,7 +47,7 @@ const login = asyncErrorWrapper( async (req, res, next) =>{
     }
 
     console.log("Access with password")
-    return sentJwtToClient(user, res)
+    return sendJwtToClient(user, res)
 
 });
 
