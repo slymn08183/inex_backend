@@ -1,18 +1,14 @@
 const CustomError = require("../../helpers/error/CustomError");
 const jwt = require("jsonwebtoken");
-const {isTokenIncluded, getAccessTokenFromHeader} = require("../../helpers/authorization/tokenHelpers");
-const {JWT_SECRET_KEY} = process.env;
-const getAccessToRoute = (req, res, next) => {
+const {isTokenIncluded, getAccessTokenFromHeader, getAdminTokenFromHeader} = require("../../helpers/authorization/tokenHelpers");
+const {compareInternalSecretKey} = require("../../helpers/input/inputHelpers")
+const {JWT_ADMIN_KEY, JWT_SECRET_KEY} = process.env;
 
+const getAccess = (req, res, next) => {
 
-    if(res.locals.access_token){
-        //return next(new CustomError("You are not authorized to access this route! Please provide access a token"), 401); //FIXME: Move string to config.env
-        return next()
-    }
-
-    jwt.verify(getAccessTokenFromHeader(req), JWT_SECRET_KEY, (err, decoded) => {
+    jwt.verify(getAdminTokenFromHeader(req), JWT_ADMIN_KEY, (err, decoded) => {
         //console.log(err)
-        if(err){
+        if(err ){
             return next(new CustomError("You are not authorized to access this route!"), 401); //FIXME: Move string to config.env
         }
         //console.log(decoded);
@@ -31,7 +27,7 @@ const getAccessToRouteWithToken = (req, res, next) => {
     jwt.verify(getAccessTokenFromHeader(req), JWT_SECRET_KEY, (err, decoded) => {
         //console.log(err)
         //console.log(decoded.secret)
-        if(err || decoded.secret !== process.env.JWT_INTERNAL_SECRET_KEY){
+        if(err || !compareInternalSecretKey(decoded.secret)){
             console.log("Token asdasdas")
             res.locals.access_token = false;
             res.locals.decoded = false;
@@ -46,7 +42,7 @@ const getAccessToRouteWithToken = (req, res, next) => {
 };
 
 module.exports = {
-    getAccessToRoute,
+    getAccess,
     getAccessToRouteWithToken
 }
 

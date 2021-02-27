@@ -49,6 +49,10 @@ const getAccessTokenFromHeader = (req) => {
     return req.headers.authorization.split(":")[1];
 }
 
+const getAdminTokenFromHeader = (req) => {
+    return req.headers.admin_token.split(":")[1];
+}
+
 const decodeToken = function (token) {
     const {JWT_SECRET_KEY} = process.env;
     jwt.verify(token, JWT_SECRET_KEY, (err, decoded) => {
@@ -65,5 +69,5 @@ module.exports = {
     isTokenIncluded,
     getAccessTokenFromHeader,
     decodeToken,
-    //sentJwtToClientWithToken
+    getAdminTokenFromHeader
 };
