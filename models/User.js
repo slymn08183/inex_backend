@@ -41,7 +41,7 @@ const UserSchema = new Schema({
                 type: String,
                 required: [true, WarningConstants.DEVICE_TYPE]
             },
-            deviceID: {
+            deviceToken: {
                 type: String,
                 required: [true, WarningConstants.DEVICE_ID]
             },

@@ -5,14 +5,14 @@ const {validateUserInput, comparePassword, validateLastChangedAt} = require("../
 const CustomError = require("../helpers/error/CustomError")
 
 const register = asyncErrorWrapper( async (req, res ,next) => {
-    const {name,email,password, deviceType, deviceID} = req.body
+    const {name,email,password, deviceType, deviceToken} = req.body
     const user = await  User.create({
         name,
         email,
         password,
         devices:[{
             deviceType,
-            deviceID
+            deviceToken
         }]
     });
     sendJwtToClient(user, res);
@@ -21,7 +21,7 @@ const register = asyncErrorWrapper( async (req, res ,next) => {
 
 const login = asyncErrorWrapper( async (req, res, next) =>{
 
-    if(res.locals.access_token){
+    if(res.locals.accessToken){
         const {email} = res.locals.decoded
 
         const user = await User.findOne({email});

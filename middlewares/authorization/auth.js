@@ -20,7 +20,7 @@ const getAccessToRouteWithToken = (req, res, next) => {
     //return next();
 
     if(!isTokenIncluded(req)){
-        res.locals.access_token = false;
+        res.locals.accessToken = false;
         res.locals.decoded = false;
         return next();
     }
@@ -31,12 +31,12 @@ const getAccessToRouteWithToken = (req, res, next) => {
         if(err || !compareInternalSecretKey(decoded.secret)){
             console.log("Token Internal Key Failed")
             console.log(err)
-            res.locals.access_token = false;
+            res.locals.accessToken = false;
             res.locals.decoded = false;
             return next();
         }
         console.log("Token TRUE")
-        res.locals.access_token = true;
+        res.locals.accessToken = true;
         res.locals.decoded = decoded;
         return next();
     })
