@@ -45,6 +45,7 @@ const isTokenIncluded = (req) => {
 const getAccessTokenFromHeader = (req) => {
 
     return req.headers["access-token"].split(":")[1];
+
 }
 
 const getAdminTokenFromHeader = (req) => {
