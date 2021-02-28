@@ -39,16 +39,16 @@ const getUserFromToken = (token) => {
 
 const isTokenIncluded = (req) => {
     console.log(req.headers)
-    return req.headers.accessToken && req.headers.accessToken.toLocaleLowerCase().startsWith("bearer:"); //FIXME: get bearer key from config.env
+    return req.headers.access-token && req.headers.access-token.toLocaleLowerCase().startsWith("bearer:"); //FIXME: get bearer key from config.env
 }
 
 const getAccessTokenFromHeader = (req) => {
 
-    return req.headers.accessToken.split(":")[1];
+    return req.headers.access-token.split(":")[1];
 }
 
 const getAdminTokenFromHeader = (req) => {
-    return req.headers.adminToken.split(":")[1];
+    return req.headers.admin-token.split(":")[1];
 }
 
 const decodeToken = function (token) {
