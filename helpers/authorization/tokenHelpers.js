@@ -38,7 +38,8 @@ const getUserFromToken = (token) => {
 }
 
 const isTokenIncluded = (req) => {
-    console.log(req.headers.toString()+"HEADERS")
+    console.log(req.headers)
+    console.log("HEADERS"+req.headers.toString()+"HEADERS")
     return req.headers.access_token && req.headers.access_token.toLocaleLowerCase().startsWith("bearer:"); //FIXME: get bearer key from config.env
 }
 
