@@ -42,7 +42,7 @@ const isTokenIncluded = (req) => {
 }
 
 const getAccessTokenFromHeader = (req) => {
-    console.log(req.headers)
+    console.log(req.headers+"HEADERS")
     return req.headers.access_token.split(":")[1];
 }
 
