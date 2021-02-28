@@ -21,7 +21,7 @@ const register = asyncErrorWrapper( async (req, res ,next) => {
 
 const login = asyncErrorWrapper( async (req, res, next) =>{
 
-    if(res.locals.access-token){
+    if(res.locals["access-token"]){
         const {email} = res.locals.decoded
 
         const user = await User.findOne({email});
